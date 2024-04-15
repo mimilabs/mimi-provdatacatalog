@@ -70,7 +70,14 @@ files = sorted(files, key=lambda x: x[0], reverse=True)
 # COMMAND ----------
 
 int_columns = {"grd_yr", "num_org_mem"}
-
+legacy_columns = {"lst_nm": "provider_last_name",
+                  "frst_nm": "provider_first_name",
+                  "mid_nm": "provider_middle_name",
+                  "org_nm": "facility_name",
+                  "cty": "citytown",
+                  "st": "state",
+                  "zip": "zip_code",
+                  "phn_numbr": "telephone_number"}
 for item in files:
     # each file is relatively big
     # so we load the data using spark one by one just in case
@@ -79,8 +86,9 @@ for item in files:
             .option("header", "true")
             .load(str(item[1])))
     header = []
-    for col_old, col_new in zip(df.columns, change_header(df.columns)):
-
+    for col_old, col_new_ in zip(df.columns, change_header(df.columns)):
+        
+        col_new = legacy_columns.get(col_new_, col_new_)
         header.append(col_new)
         
         if col_new in int_columns:
