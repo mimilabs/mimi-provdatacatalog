@@ -92,7 +92,7 @@ for item in files:
         header.append(col_new)
         
         if col_new in int_columns:
-            df = df.withColumn(col_new, regexp_replace(col(col_old), "[$,%]", "").cast("int"))
+            df = df.withColumn(col_new, regexp_replace(col(col_old), "[\$,%]", "").cast("int"))
         else:
             df = df.withColumn(col_new, col(col_old))
             
